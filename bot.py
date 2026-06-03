@@ -63,7 +63,6 @@ def format_report(data: dict) -> str:
             lines.append(f"Вал – {int(gross):,} кг.".replace(",", " "))
         lines.append("")
 
-    # Plan/fact block
     if data.get("plan_ha") is not None:
         lines.append(f"План: {data['plan_ha']} га")
     if data.get("fact_ha") is not None:
@@ -81,7 +80,6 @@ def format_report(data: dict) -> str:
     if data.get("plan_ha") is not None:
         lines.append("")
 
-    # Totals
     if data.get("total_area_ha") is not None:
         lines.append(f"Итого убранная площадь – {data['total_area_ha']} га.")
     if data.get("total_gross_kg") is not None:
@@ -122,7 +120,7 @@ async def handle_message(message: types.Message):
 
     try:
         response = claude.messages.create(
-            model="claude-sonnet-4-5",
+            model="claude-haiku-4-5-20251001",
             max_tokens=1000,
             messages=[{
                 "role": "user",
@@ -130,10 +128,9 @@ async def handle_message(message: types.Message):
             }]
         )
 
-       raw = response.content[0].text.strip()
-# Убираем markdown-блоки если есть
-raw = raw.replace("```json", "").replace("```", "").strip()
-data = json.loads(raw)
+        raw = response.content[0].text.strip()
+        raw = raw.replace("```json", "").replace("```", "").strip()
+        data = json.loads(raw)
         report = format_report(data)
         await message.answer(report)
 
