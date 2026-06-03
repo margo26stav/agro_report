@@ -130,8 +130,10 @@ async def handle_message(message: types.Message):
             }]
         )
 
-        raw = response.content[0].text.strip()
-        data = json.loads(raw)
+       raw = response.content[0].text.strip()
+# Убираем markdown-блоки если есть
+raw = raw.replace("```json", "").replace("```", "").strip()
+data = json.loads(raw)
         report = format_report(data)
         await message.answer(report)
 
